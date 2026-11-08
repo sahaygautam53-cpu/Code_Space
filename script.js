@@ -2,7 +2,7 @@ const FIREBASE_DB_URL = 'https://sate-5a04f-default-rtdb.asia-southeast1.firebas
 const ADMIN_PASSWORD = 'admin123';
 
 // 🔒 Secure Environment Variable (Injected via GitHub Actions from your environment secrets)
-const MERCHANT_UPI_ID = window.MERCHANT_UPI_ID || "your-fallback-upi@paytm"; 
+const MERCHANT_UPI_ID = window.MERCHANT_UPI_ID || "adityashrivastav392@oksbi"; 
 
 // Default initial snippets
 let snippets = {
