@@ -1,0 +1,26 @@
+name: Deploy CodeSpace to GitHub Pages
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    
+    # आपके गिटहब एनवायरमेंट का सटीक नाम
+    environment: 
+      name: Configure UPI_ID
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Inject UPI ID from Environment
+        run: |
+          # यह आपके सीक्रेट 'UPI_ID' को config.js में सुरक्षित रूप से डाल देगा
+          echo "const MERCHANT_UPI_ID = '${{ secrets.UPI_ID }}';" > config.js
+
+      - name: Deploy to GitHub Pages
+        uses: actions/deploy-pages@v4
+        
