@@ -2,7 +2,7 @@ const FIREBASE_DB_URL = 'https://sate-5a04f-default-rtdb.asia-southeast1.firebas
 const ADMIN_PASSWORD = 'admin123';
 
 // 🔒 सिक्योर मर्चेंट वेरिएबल: यहाँ अपनी असली UPI ID डालें
-const MERCHANT_UPI_ID = "your-actual-upi@paytm"; 
+const MERCHANT_UPI_ID = "UPI_ID"; 
 
 // डिफ़ॉल्ट स्निपेट्स
 let snippets = {
