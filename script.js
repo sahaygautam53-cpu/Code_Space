@@ -1,10 +1,10 @@
 const FIREBASE_DB_URL = 'https://sate-5a04f-default-rtdb.asia-southeast1.firebasedatabase.app/snippets';
 const ADMIN_PASSWORD = 'admin123';
 
-// 🔒 सिक्योर मर्चेंट वेरिएबल: यहाँ अपनी असली UPI ID डालें
-const MERCHANT_UPI_ID = "UPI_ID"; 
+// 🔒 Secure Environment Variable (Injected via GitHub Actions from your environment secrets)
+const MERCHANT_UPI_ID = window.MERCHANT_UPI_ID || "your-fallback-upi@paytm"; 
 
-// डिफ़ॉल्ट स्निपेट्स
+// Default initial snippets
 let snippets = {
     1: {
         filename: 'appointment_form.html',
@@ -24,7 +24,7 @@ let snippets = {
 
 let currentActiveId = 1;
 
-// Firebase से डेटा फेच करने का फंक्सन
+// Fetch and sync data from Firebase
 async function syncFromFirebase() {
     try {
         const response = await fetch(`${FIREBASE_DB_URL}.json`);
@@ -88,27 +88,31 @@ function loadSnippet(id) {
     document.getElementById('snippet-price').innerText = data.price || '₹0';
     document.getElementById('interactive-preview').innerHTML = data.preview || '';
 
-    // जैसे ही स्निपेट लोड हो, पेमेंट लिंक्स को प्राइस के हिसाब से अपडेट कर दें
+    // Update payment links with the correct price and secure UPI ID
     updatePaymentLinks(data.price);
 }
 
-// 🚀 डायरेक्ट UPI टेलीपोर्टेशन लिंक्स सेट करने वाला फंक्शन
+// 🚀 Direct UPI Teleportation Link Generator
 function updatePaymentLinks(priceStr) {
     const numericPrice = (priceStr || '0').replace(/[^0-9]/g, '');
     const merchantName = "CodeSpace";
     const note = "CodeSpace Snippet Purchase";
 
-    // विभिन्न UPI Intents
     const universalUpiLink = `upi://pay?pa=${MERCHANT_UPI_ID}&pn=${encodeURIComponent(merchantName)}&am=${numericPrice}&cu=INR&tn=${encodeURIComponent(note)}`;
     const gpayLink = `tez://upi/pay?pa=${MERCHANT_UPI_ID}&pn=${encodeURIComponent(merchantName)}&am=${numericPrice}&cu=INR&tn=${encodeURIComponent(note)}`;
     const phonepeLink = `phonepe://pay?pa=${MERCHANT_UPI_ID}&pn=${encodeURIComponent(merchantName)}&am=${numericPrice}&cu=INR&tn=${encodeURIComponent(note)}`;
     const paytmLink = `paytmmp://pay?pa=${MERCHANT_UPI_ID}&pn=${encodeURIComponent(merchantName)}&am=${numericPrice}&cu=INR&tn=${encodeURIComponent(note)}`;
 
-    // मॉडल के अंदर के एंकर (HREF) लिंक्स को अपडेट करना
-    document.getElementById('pay-universal').href = universalUpiLink;
-    document.getElementById('pay-gpay').href = gpayLink;
-    document.getElementById('pay-phonepe').href = phonepeLink;
-    document.getElementById('pay-paytm').href = paytmLink;
+    // Safely assign to modal elements if they exist
+    const payUniversal = document.getElementById('pay-universal');
+    const payGpay = document.getElementById('pay-gpay');
+    const payPhonepe = document.getElementById('pay-phonepe');
+    const payPaytm = document.getElementById('pay-paytm');
+
+    if (payUniversal) payUniversal.href = universalUpiLink;
+    if (payGpay) payGpay.href = gpayLink;
+    if (payPhonepe) payPhonepe.href = phonepeLink;
+    if (payPaytm) payPaytm.href = paytmLink;
 }
 
 /* Panel Toggle System */
@@ -174,5 +178,5 @@ async function handleNewSnippetUpload(event) {
     loadSnippet(nextId);
 }
 
-// ऐप स्टार्ट होते ही सिंकिंग चालू करें
+// Initialize application sync on startup
 syncFromFirebase();
