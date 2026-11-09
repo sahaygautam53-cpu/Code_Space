@@ -1,28 +1,12 @@
 const FIREBASE_DB_URL = 'https://sate-5a04f-default-rtdb.asia-southeast1.firebasedatabase.app/snippets';
 const ADMIN_PASSWORD = 'admin123';
 
-// 🔒 Secure Environment Variable (Injected via GitHub Actions from your environment secrets)
+// 🔒 Secure Merchant UPI ID
 const MERCHANT_UPI_ID = "adityashrivastav392@oksbi"; 
 
-// Default initial snippets
-let snippets = {
-    1: {
-        filename: 'appointment_form.html',
-        title: 'Appointment Booking Form',
-        price: '₹39',
-        code: `<!-- PROTECTED SOURCE CODE -->\n<form id="appForm">\n  <input type="text" placeholder="Your Name" required>\n  <input type="date" required>\n  <input type="time" required>\n  <button type="submit">Book Slot</button>\n</form>`,
-        preview: `<form style="display:flex; flex-direction:column; gap:10px; width:250px; text-align:left; background:#161b22; padding:20px; border-radius:10px; border:1px solid #30363d;" onsubmit="event.preventDefault(); alert('Appointment Booked!');">\n            <div style="font-size:0.9rem; font-weight:bold; color:#fff;">📅 Book Appointment</div>\n            <input type="text" placeholder="Your Name" style="padding:8px; border-radius:4px; border:1px solid #30363d; background:#0d1117; color:#fff; font-size:0.8rem; outline:none;">\n            <input type="date" style="padding:8px; border-radius:4px; border:1px solid #30363d; background:#0d1117; color:#fff; font-size:0.8rem; outline:none;">\n            <input type="time" style="padding:8px; border-radius:4px; border:1px solid #30363d; background:#0d1117; color:#fff; font-size:0.8rem; outline:none;">\n            <button type="submit" style="padding:9px; background:#2ea043; color:#fff; font-weight:bold; border:none; border-radius:6px; cursor:pointer; font-size:0.8rem;">Confirm Slot</button>\n        </form>`
-    },
-    2: {
-        filename: 'dark_mode_toggle.js',
-        title: 'Instant Dark Mode Script',
-        price: '₹29',
-        code: `// PROTECTED SOURCE CODE\nconst toggleBtn = document.querySelector('#theme-btn');\ntoggleBtn.addEventListener('click', () => {\n  document.body.classList.toggle('dark-theme');\n});`,
-        preview: `<button onclick="alert('Theme toggled!')" style="padding:10px 18px; background:#bc8cff; color:#000; font-weight:bold; border:none; border-radius:20px; cursor:pointer; font-size:0.85rem;">🌙 Toggle Theme Switcher</button>`
-    }
-};
-
-let currentActiveId = 1;
+// 🔥 Clean state (No hardcoded sample data, strictly fetched from Firebase)
+let snippets = {};
+let currentActiveId = null;
 
 // Fetch and sync data from Firebase
 async function syncFromFirebase() {
@@ -31,32 +15,26 @@ async function syncFromFirebase() {
         const data = await response.json();
         
         if (data) {
-            const cleanedSnippets = {};
-            let index = 1;
-            Object.values(data).forEach(item => {
-                if (item && item.filename) {
-                    cleanedSnippets[index] = item;
-                    index++;
-                }
-            });
-            if (Object.keys(cleanedSnippets).length > 0) {
-                snippets = cleanedSnippets;
-            }
+            snippets = data;
         } else {
-            await fetch(`${FIREBASE_DB_URL}.json`, {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(snippets)
-            });
+            snippets = {};
         }
     } catch (err) {
-        console.error("Firebase fetch error, using fallback:", err);
+        console.error("Firebase fetch error:", err);
+        snippets = {};
     }
     
     renderSidebar();
-    const firstKey = Object.keys(snippets)[0];
-    if (firstKey) {
-        loadSnippet(firstKey);
+    const keys = Object.keys(snippets);
+    if (keys.length > 0) {
+        loadSnippet(keys[0]);
+    } else {
+        // Empty state if firebase is blank
+        document.getElementById('tab-name').innerText = "No files found";
+        document.getElementById('code-content').textContent = "// Please upload via admin panel";
+        document.getElementById('snippet-title').innerText = "No Component Available";
+        document.getElementById('snippet-price').innerText = "₹0";
+        document.getElementById('interactive-preview').innerHTML = '<div style="display:flex; justify-content:center; align-items:center; height:100%; color:#8b949e; font-family:sans-serif; font-size:0.85rem; text-align:center; padding:20px;">No code snippets published yet.<br>Click v1.0.4-sys to add.</div>';
     }
 }
 
@@ -65,18 +43,25 @@ function renderSidebar() {
     if (!container) return;
     container.innerHTML = '';
     
-    Object.keys(snippets).forEach(id => {
+    const keys = Object.keys(snippets);
+    if (keys.length === 0) {
+        container.innerHTML = '<div style="font-size:0.75rem; color:var(--text-muted); padding:5px;">No repository files</div>';
+        return;
+    }
+    
+    keys.forEach(id => {
         const item = snippets[id];
+        if (!item) return;
         const div = document.createElement('div');
         div.className = `file-item ${parseInt(id) === parseInt(currentActiveId) ? 'active' : ''}`;
         div.onclick = () => loadSnippet(id);
-        div.innerHTML = `<span>📄</span> ${item.filename}`;
+        div.innerHTML = `<span>📄</span> ${item.filename || 'untitled.html'}`;
         container.appendChild(div);
     });
 }
 
 function loadSnippet(id) {
-    currentActiveId = parseInt(id);
+    currentActiveId = id;
     const data = snippets[id];
     if (!data) return;
     
@@ -86,7 +71,17 @@ function loadSnippet(id) {
     document.getElementById('code-content').textContent = data.code || '';
     document.getElementById('snippet-title').innerText = data.title || '';
     document.getElementById('snippet-price').innerText = data.price || '₹0';
-    document.getElementById('interactive-preview').innerHTML = data.preview || '';
+
+    // 🚀 Render Real Code inside Phone Mockup Screen via Iframe
+    const previewContainer = document.getElementById('interactive-preview');
+    previewContainer.innerHTML = '';
+    
+    const iframe = document.createElement('iframe');
+    iframe.style.cssText = 'width: 100%; height: 100%; border: none; display: block;';
+    iframe.sandbox = 'allow-scripts allow-forms allow-same-origin';
+    iframe.srcdoc = data.code || '';
+    
+    previewContainer.appendChild(iframe);
 
     // Update payment links with the correct price and secure UPI ID
     updatePaymentLinks(data.price);
@@ -103,7 +98,6 @@ function updatePaymentLinks(priceStr) {
     const phonepeLink = `phonepe://pay?pa=${MERCHANT_UPI_ID}&pn=${encodeURIComponent(merchantName)}&am=${numericPrice}&cu=INR&tn=${encodeURIComponent(note)}`;
     const paytmLink = `paytmmp://pay?pa=${MERCHANT_UPI_ID}&pn=${encodeURIComponent(merchantName)}&am=${numericPrice}&cu=INR&tn=${encodeURIComponent(note)}`;
 
-    // Safely assign to modal elements if they exist
     const payUniversal = document.getElementById('pay-universal');
     const payGpay = document.getElementById('pay-gpay');
     const payPhonepe = document.getElementById('pay-phonepe');
@@ -155,8 +149,7 @@ async function handleNewSnippetUpload(event) {
         filename: document.getElementById('new-filename').value,
         title: document.getElementById('new-title').value,
         price: document.getElementById('new-price').value,
-        code: document.getElementById('new-code').value,
-        preview: document.getElementById('new-preview').value
+        code: document.getElementById('new-code').value
     };
 
     snippets[nextId] = newSnippet;
@@ -167,7 +160,7 @@ async function handleNewSnippetUpload(event) {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(snippets)
         });
-        alert("✅ Component Published & Synced Live!");
+        alert("✅ Real Code Published & Synced to Firebase!");
     } catch (err) {
         console.error("Firebase write error:", err);
         alert("⚠️ Saved locally, but cloud sync failed.");
