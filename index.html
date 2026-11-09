@@ -46,15 +46,19 @@
             </div>
         </div>
 
-        <!-- CENTER PANEL: Main Live Interactive Preview (Large View) -->
+        <!-- CENTER PANEL: Main Live Interactive Preview inside a Phone Mockup -->
         <div class="preview-section panel" id="main-preview-panel">
             <div class="tabs-bar">
                 <div class="tab active" id="tab-name">appointment_form.html</div>
-                <span class="preview-status-indicator">● LIVE INTERACTIVE RUNNER</span>
+                <span class="preview-status-indicator">● LIVE PHONE MOCKUP RUNNER</span>
             </div>
             
             <div class="main-preview-viewport">
-                <div id="interactive-preview"></div>
+                <!-- 📱 Mobile Mockup Frame -->
+                <div class="phone-mockup">
+                    <div class="phone-speaker"></div>
+                    <div class="phone-screen" id="interactive-preview"></div>
+                </div>
             </div>
         </div>
 
@@ -88,7 +92,6 @@
                         <li>✓ Mobile Responsive & Clean Code</li>
                         <li>✓ Instant Auto UPI Download</li>
                     </ul>
-                    <!-- यह बटन अब सीधे डायरेक्ट पेमेंट मॉडल को खोलेगा -->
                     <button class="btn-upi" onclick="openPaymentModal()">🚀 Buy & Unlock Code</button>
                 </div>
             </div>
@@ -96,7 +99,7 @@
 
     </div>
 
-    <!-- Modals (QR Code हटा दिया गया है, अब डायरेक्ट पेमेंट ऐप्स के लिंक्स हैं) -->
+    <!-- Modals -->
     <div class="modal" id="payModal">
         <div class="modal-content">
             <span class="close-btn" onclick="closePaymentModal()">&times;</span>
@@ -117,13 +120,12 @@
     <div class="modal" id="adminModal">
         <div class="modal-content" style="width: 420px;">
             <span class="close-btn" onclick="closeAdminModal()">&times;</span>
-            <h3 style="color: var(--accent-blue); margin-bottom: 5px;">Upload Code Snippet</h3>
+            <h3 style="color: var(--accent-blue); margin-bottom: 5px;">Publish Real Code Snippet</h3>
             <form class="admin-form" onsubmit="handleNewSnippetUpload(event)">
                 <input type="text" id="new-filename" placeholder="File Name (e.g. form.html)" required>
                 <input type="text" id="new-title" placeholder="Title" required>
                 <input type="text" id="new-price" placeholder="Price (e.g. ₹39)" required>
-                <textarea id="new-code" placeholder="Full Raw Code (Hidden behind blur)" required></textarea>
-                <textarea id="new-preview" placeholder="Live Preview HTML Block" required></textarea>
+                <textarea id="new-code" placeholder="Paste Full Real Code Here (Will run inside phone preview)" style="height: 140px;" required></textarea>
                 <button type="submit" class="btn-upi" style="background: var(--accent-blue);">Publish Snippet</button>
             </form>
         </div>
