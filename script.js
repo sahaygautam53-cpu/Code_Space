@@ -1,10 +1,10 @@
 const FIREBASE_DB_URL = 'https://sate-5a04f-default-rtdb.asia-southeast1.firebasedatabase.app/snippets';
 const ADMIN_PASSWORD = 'admin123';
 
-// 🔒 Secure Merchant UPI ID
-const MERCHANT_UPI_ID = "adityashrivastav392@oksbi"; 
+// 🔒 Developer Contact Email & Secure UPI ID (For manual sharing later in chat)
+const DEVELOPER_EMAIL = "websample556@gmail.com";
 
-// 🔥 Clean state (No hardcoded sample data, strictly fetched from Firebase)
+// 🔥 Clean state (strictly fetched from Firebase)
 let snippets = {};
 let currentActiveId = null;
 
@@ -83,30 +83,21 @@ function loadSnippet(id) {
     
     previewContainer.appendChild(iframe);
 
-    // Update payment links with the correct price and secure UPI ID
-    updatePaymentLinks(data.price);
+    // Update Consultation Email Link dynamically with snippet details
+    updateConsultationLink(data.title, data.price);
 }
 
-// 🚀 Direct UPI Teleportation Link Generator
-function updatePaymentLinks(priceStr) {
-    const numericPrice = (priceStr || '0').replace(/[^0-9]/g, '');
-    const merchantName = "CodeSpace";
-    const note = "CodeSpace Snippet Purchase";
+// 🚀 Direct Email Teleport Link Generator with Pre-filled "Hi" Message & Snippet Subject
+function updateConsultationLink(snippetTitle, priceStr) {
+    const subject = encodeURIComponent(`Consultation & Purchase Inquiry: ${snippetTitle} (${priceStr})`);
+    const body = encodeURIComponent(`Hi,\n\nI want to consult with you regarding the code snippet "${snippetTitle}" priced at ${priceStr}. Please guide me with the UPI payment details so we can proceed with the .ZIP file delivery.`);
 
-    const universalUpiLink = `upi://pay?pa=${MERCHANT_UPI_ID}&pn=${encodeURIComponent(merchantName)}&am=${numericPrice}&cu=INR&tn=${encodeURIComponent(note)}`;
-    const gpayLink = `tez://upi/pay?pa=${MERCHANT_UPI_ID}&pn=${encodeURIComponent(merchantName)}&am=${numericPrice}&cu=INR&tn=${encodeURIComponent(note)}`;
-    const phonepeLink = `phonepe://pay?pa=${MERCHANT_UPI_ID}&pn=${encodeURIComponent(merchantName)}&am=${numericPrice}&cu=INR&tn=${encodeURIComponent(note)}`;
-    const paytmLink = `paytmmp://pay?pa=${MERCHANT_UPI_ID}&pn=${encodeURIComponent(merchantName)}&am=${numericPrice}&cu=INR&tn=${encodeURIComponent(note)}`;
-
-    const payUniversal = document.getElementById('pay-universal');
-    const payGpay = document.getElementById('pay-gpay');
-    const payPhonepe = document.getElementById('pay-phonepe');
-    const payPaytm = document.getElementById('pay-paytm');
-
-    if (payUniversal) payUniversal.href = universalUpiLink;
-    if (payGpay) payGpay.href = gpayLink;
-    if (payPhonepe) payPhonepe.href = phonepeLink;
-    if (payPaytm) payPaytm.href = paytmLink;
+    const mailtoLink = `mailto:${DEVELOPER_EMAIL}?subject=${subject}&body=${body}`;
+    
+    const consultBtn = document.getElementById('consult-btn');
+    if (consultBtn) {
+        consultBtn.href = mailtoLink;
+    }
 }
 
 /* Panel Toggle System */
@@ -136,8 +127,6 @@ function triggerAdminModal() {
 }
 
 function closeAdminModal() { document.getElementById('adminModal').style.display = 'none'; }
-function openPaymentModal() { document.getElementById('payModal').style.display = 'flex'; }
-function closePaymentModal() { document.getElementById('payModal').style.display = 'none'; }
 
 async function handleNewSnippetUpload(event) {
     event.preventDefault();
