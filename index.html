@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- Open Graph / WhatsApp Meta Tags -->
     <meta property="og:title" content="Code_SpaceX_pro // Micro Code Snippets & UI Blocks">
-    <meta property="og:description" content="Explore instant ready-to-use clean logic components and web micro snippets with automated delivery.">
+    <meta property="og:description" content="Explore instant ready-to-use clean logic components and web micro snippets with developer consultation.">
     <meta property="og:image" content="https://Code-SpaceX-pro.onrender.com/logo.png">
     <meta property="og:url" content="https://Code-SpaceX-Pro.onrender.com">
     <meta property="og:type" content="website">
@@ -24,9 +24,9 @@
                 <span class="dot dot-yellow"></span>
                 <span class="dot dot-green"></span>
             </div>
-            <span>Code SpaceX Pro</span>
+            <span>CodeSpace.py</span>
         </div>
-        <div class="status-badge">⚡ Instant UPI Auto-Delivery</div>
+        <div class="status-badge">💬 Developer Consultation Portal</div>
     </header>
 
     <!-- Main Workspace -->
@@ -62,7 +62,7 @@
             </div>
         </div>
 
-        <!-- RIGHT PANEL: Blurred Source Code & Buy Section -->
+        <!-- RIGHT PANEL: Blurred Source Code & Consultation Section -->
         <div class="code-buy-panel panel" id="code-buy-panel">
             <!-- Border Divider Collapse Handle (Right) -->
             <div class="divider-handle right-handle" onclick="togglePanel('code-buy-panel')" title="Toggle Code & Buy Panel">
@@ -77,22 +77,23 @@
                         <div class="lock-card">
                             <div class="lock-icon">🔒</div>
                             <h4>Source Code Protected</h4>
-                            <p>Complete source code (.ZIP bundle) unlocks instantly after UPI payment.</p>
+                            <p>Complete source code (.ZIP bundle) delivered securely after chat consultation & verification.</p>
                         </div>
                     </div>
                 </div>
 
-                <!-- Buy & Checkout Card -->
+                <!-- Consultation Card (Replacing Buy Card) -->
                 <div class="buy-card">
                     <h3 id="snippet-title">Component</h3>
                     <p style="font-size: 0.75rem; color: var(--text-muted); margin-top: 2px;">Ready-to-use clean logic component.</p>
                     <div class="price-tag" id="snippet-price">₹39</div>
                     <ul class="features-list">
                         <li>✓ Complete Source Code (.ZIP)</li>
-                        <li>✓ Mobile Responsive & Clean Code</li>
-                        <li>✓ Instant Auto UPI Download</li>
+                        <li>✓ Direct Chat with Developer</li>
+                        <li>✓ Secure Manual Delivery</li>
                     </ul>
-                    <button class="btn-upi" onclick="openPaymentModal()">🚀 Buy & Unlock Code</button>
+                    <!-- 🚀 Free Consultation Button with pre-filled mail -->
+                    <a id="consult-btn" href="#" class="btn-upi" style="text-decoration: none; text-align: center; display: block; background: var(--accent-green);">💬 Free Consultation with Developer</a>
                 </div>
             </div>
         </div>
@@ -100,23 +101,6 @@
     </div>
 
     <!-- Modals -->
-    <div class="modal" id="payModal">
-        <div class="modal-content">
-            <span class="close-btn" onclick="closePaymentModal()">&times;</span>
-            <h3 style="margin-bottom: 5px;">⚡ Instant UPI Teleport</h3>
-            <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 20px;">Choose your preferred payment app to pay instantly:</p>
-            
-            <div style="display: flex; flex-direction: column; gap: 10px;">
-                <a id="pay-universal" href="#" class="btn-upi" style="text-decoration: none; text-align: center; background: #2ea043; display: block;">📱 Pay via Default UPI App</a>
-                <a id="pay-gpay" href="#" class="btn-upi" style="text-decoration: none; text-align: center; background: #1a73e8; display: block;">🔵 Google Pay (GPay)</a>
-                <a id="pay-phonepe" href="#" class="btn-upi" style="text-decoration: none; text-align: center; background: #5f259f; display: block;">🟣 PhonePe</a>
-                <a id="pay-paytm" href="#" class="btn-upi" style="text-decoration: none; text-align: center; background: #00b9f1; color: #000; font-weight: bold; display: block;">🔵 Paytm</a>
-            </div>
-
-            <p style="font-size: 0.75rem; color: var(--accent-orange); margin-top: 15px;">Clicking any button will instantly teleport you to your UPI app with the exact amount!</p>
-        </div>
-    </div>
-
     <div class="modal" id="adminModal">
         <div class="modal-content" style="width: 420px;">
             <span class="close-btn" onclick="closeAdminModal()">&times;</span>
